@@ -9,10 +9,10 @@ import re
 conn = sqlite3.connect("C:/tweets.db")
 conn.text_factory = bytes
 c = conn.cursor()
-c.execute("SELECT screen_name, in_reply_to_screen_name FROM tweets;")
+c.execute("SELECT user_id, screen_name, text FROM tweets where text like '%cigarette%';")
 
 items = c.fetchall()
-# print(c.fetchmany(5))
+print(len(items))
 
 G = nx.DiGraph()
 
@@ -30,7 +30,14 @@ for i in range(len(items)):
         print(round(i/len(items),4))
 
 
+
+# G2 = G.copy()
+# inde = G2.in_degree(G2)
+# outde = G2.out_degree(G2)
+# for n in G2.nodes():
+#     if inde[n]<2 and outde[n]<2:
+#         G.remove_node(n)
 G.remove_nodes_from(list(nx.isolates(G)))
 nx.draw(G,with_labels=True)
 plt.show()
-plt.savefig('labels.png')
+plt.savefig('reply.png')

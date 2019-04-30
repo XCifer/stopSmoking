@@ -9,25 +9,24 @@ import re
 conn = sqlite3.connect("C:/tweets.db")
 conn.text_factory = bytes
 c = conn.cursor()
-c.execute("SELECT user_id, screen_name, text FROM tweets;")
+c.execute("SELECT user_id, screen_name, text FROM tweets where text like '%cigarette%';")
 
 items = c.fetchall()
-# print(c.fetchmany(5))
+print(len(items))
 
 G = nx.DiGraph()
 
-follow = []
 for i in range(len(items)):
-    G.add_node(i, user_id = items[i][0], screen_name = items[i][1])
+    G.add_node(i, user_id = items[i][0], screen_name = items[i][1], text = items[i][2])
 
 for i in range(len(items)):
     mentions = []
     text = str(items[i][2])
     mentions = re.findall(r'(?<=^|(?<=[^a-zA-Z0-9-\.]))@([A-Za-z0-9_]+)',text)
-    # print(mentions)
+    print(mentions)
     if mentions:
         for idx in range(len(items)):
-            if items[idx][2] in mentions:
+            if items[idx][1] in mentions:
                 G.add_edge(i,idx)
                 print(i,"Edge from ",i," to ",idx," added.")
     else :
